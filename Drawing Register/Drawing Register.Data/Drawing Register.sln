@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37710.0 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drawing Register.Data", "Drawing Register.Data.csproj", "{3ED83E26-8579-4177-BB53-D7D1295F5CEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Drawing Register.Web", "..\Drawing Register.Web\Drawing Register.Web.csproj", "{34AEF5B2-0D68-4F9A-BB25-02D523B6581D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3ED83E26-8579-4177-BB53-D7D1295F5CEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3ED83E26-8579-4177-BB53-D7D1295F5CEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3ED83E26-8579-4177-BB53-D7D1295F5CEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3ED83E26-8579-4177-BB53-D7D1295F5CEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34AEF5B2-0D68-4F9A-BB25-02D523B6581D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34AEF5B2-0D68-4F9A-BB25-02D523B6581D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34AEF5B2-0D68-4F9A-BB25-02D523B6581D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34AEF5B2-0D68-4F9A-BB25-02D523B6581D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D4FD15F3-1746-4F7C-8439-8CD8852F20CD}
+	EndGlobalSection
+EndGlobal
