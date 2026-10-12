@@ -14,7 +14,7 @@ It's something an engineer would use, and it's small enough to finish.
 - **Drawing** (main entity): Id, DrawingNumber, Title, ProjectId, Status (enum: Draft, InReview, Released, Obsolete), Designer, Weight (number), CreatedDate, ReleasedDate (nullable).
 - **DrawingRevision** (child of Drawing): Id, DrawingId, RevisionLetter, Description, Date.
 
-Drawing has a text field, a lookup, an enum, dates and a number, so there's plenty to filter on. Revision gives you one parent-child relationship, a simpler version of what you did with dimensions.
+Drawing has a text field, a lookup, an enum, dates and a number, so there's plenty to filter on. Revision gives you one parent-child relationship.
 
 ## 2. Carried over from Sling Pattern Library (review, not new)
 
@@ -45,11 +45,11 @@ Drawing has a text field, a lookup, an enum, dates and a number, so there's plen
 
 Also check what happens with client-side validation switched off, and why the server must still catch it.
 
-## 5. Out of scope (on purpose)
+## 5. Out of scope (on purpose) ideas
 
-Authentication, file uploads, links to SolidWorks files, a service layer, unit tests, soft delete. Park these in the README as "next version" ideas.
+Authentication, file uploads, links to SolidWorks files, a service layer, unit tests, soft delete.
 
-## Suggested build order
+## Build order
 
 1. Create the repo folder, with a README and `.gitignore`.
 2. Entities, migration, seed data.
@@ -62,5 +62,3 @@ Authentication, file uploads, links to SolidWorks files, a service layer, unit t
 ## Done means
 
 I can search by text, filter by project and status, sort by column, and page through 150 seeded drawings. I can add and edit drawings with all five kinds of validation working, and I can add revisions to a drawing.
-
-If you want to trim it, drop the date range filter and the business rule in validation #5. That still covers every concept.
