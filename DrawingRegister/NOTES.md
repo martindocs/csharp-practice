@@ -1,3 +1,6 @@
+## 2026-10-20
+- create seed class for initial data 
+
 ## 2026-10-15: Setup the project
 - Install pckg to both Data & Web: 
 	- Microsoft.EntityFrameworkCore.Design

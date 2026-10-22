@@ -1,4 +1,5 @@
 using DrawingRegister.Data.Context;
+using DrawingRegister.Data.Seeding;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(buil
 
 var app = builder.Build();
 
+// Populate initial seeded data
+SeedData.PopulateDb(app);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
