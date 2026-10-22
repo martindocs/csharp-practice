@@ -19,15 +19,3 @@ namespace DrawingRegister.Data.Entities
         public ICollection<Drawing> Drawings { get; set; } = new List<Drawing>(); // init collection so its not null at the start
     }
 }
-
-//protected override void OnModelCreating(ModelBuilder modelBuilder)
-//{
-//    modelBuilder
-//        .Entity<Drawing>()
-//        .Property(e => e.Status)
-//        .HasConversion<string>();
-//    modelBuilder
-//        .Entity<Drawing>()
-//        .Property(e => e.Type)
-//        .HasConversion<string>();
-//}
