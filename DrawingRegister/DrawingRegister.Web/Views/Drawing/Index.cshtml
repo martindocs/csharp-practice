@@ -1,0 +1,29 @@
+﻿@model List<DrawingRegister.Web.Models.Drawing.IndexDrawingViewModel>
+@{
+}
+
+<table>
+     <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Document No.</th>
+            <th>Status</th>
+            <th>Project Name</th>
+        </tr>
+     </thead>
+      <tbody>
+            @foreach(var drw in Model)
+            {
+                <tr>
+                    <td>@drw.Id</td>
+                    <td>@drw.Name</td>
+                    <td>@drw.DocumentNumber</td>
+                    <td>@drw.DrawingStatus</td>
+                    <td>@drw.ProjectName</td>
+                </tr>                
+            }
+
+      </tbody>
+</table>
+

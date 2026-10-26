@@ -1,3 +1,6 @@
+## 2026-10-22
+- write DrawingController to show the list
+
 ## 2026-10-20
 - create seed class for initial data 
 
