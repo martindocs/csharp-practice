@@ -1,0 +1,109 @@
+﻿@model DrawingRegister.Web.Models.Drawing.Add.AddDrawingViewModel
+@using DrawingRegister.Data.Entities
+
+<form method="post" asp-controller="Drawing" asp-action="AddDrawing">
+    <div class="mb-3">
+        <select 
+            asp-for="ProjectId"
+            class="form-select" 
+            aria-label="Projects" 
+            id="projects-dropdown"
+            asp-items="Model.Projects"
+        >
+            <option value="" selected>Select Project</option>
+        </select>
+        <span asp-validation-for="ProjectId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" asp-for="Name">   
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="path" class="form-label">Path</label>
+        <input type="text" class="form-control" id="path" asp-for="Path">  
+        <span asp-validation-for="Path" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="docNumber" class="form-label">Document Number</label>
+        @* asp-validation-for is the Razor tag helper that displays errors. *@
+        <input type="number" class="form-control" id="docNumber" asp-for="DocumentNumber">
+        <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+        
+    </div>
+    <div class="mb-3">
+        <select 
+            asp-for="DrawingType"
+            class="form-select" 
+            aria-label="Drawing Types"            
+                asp-items="Html.GetEnumSelectList<DrawingRegister.Data.Entities.Type>()">
+            @* <option value="" selected> with an int: an empty value on a non-nullable int/enum fails model binding with a “value is invalid” error, which is actually useful *@
+            <option value="" selected>Select Drawing Type</option>
+        </select>
+        <span asp-validation-for="DrawingType" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <select 
+            asp-for="DrawingStatus"
+            class="form-select"
+            aria-label="Drawing Status"            
+                asp-items="Html.GetEnumSelectList<Status>()">
+            <option value="" selected>Select Drawing Status</option>
+        </select>
+        <span asp-validation-for="DrawingStatus" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Drawing</button>
+</form>
+
+@* 
+
+    * An extra HTTP request on every page load.
+    * The dropdown is empty until JS finishes, and breaks if JS fails.
+    * On a validation failure, the page re-renders and the JS has to run again; the selected ProjectId is lost unless you re-select it by hand.
+    * More code to maintain, in two languages. 
+
+    * Trade-off to know: fetching via JS is the right tool when options depend on another control, like a second dropdown that changes based on the first. Here nothing depends on anything, so server-side rendering is simpler and more robust.
+*@
+<script>
+    // const dropDown = document.getElementById("projects-dropdown");
+
+    // dropDown.addEventListener("change", (e)=>{
+
+    //     const dropDownValue = parseInt(e.target.value);
+        
+    //     if(!Number.isInteger(dropDownValue)) return;
+
+    //     dropDown.value = dropDownValue;
+        
+    // })
+         
+    // window.addEventListener("load", async (e)=>{
+    //     const url = "/Drawing/DropdownAllProjects/"
+
+    //     try{
+    //         const response = await fetch(url);
+
+    //         if(!response.ok){
+    //             throw new Error(`Response status: ${respose.status}` )
+    //         }
+
+    //         const result = await response.json();
+           
+    //         const fragment = document.createDocumentFragment();
+
+    //         result.forEach(elem=>{
+    //             const selectOption = document.createElement("option");
+    //             selectOption.value = elem.id;
+    //             selectOption.textContent = elem.name;
+    //             fragment.appendChild(selectOption);
+    //         });
+    //         dropDown.appendChild(fragment);
+            
+    //     }catch(err){
+    //         console.log(err.message);
+    //     }
+    // })
+</script>
+
+
+

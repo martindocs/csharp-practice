@@ -28,6 +28,9 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Drawing" asp-action="Index">Drawing List</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Drawing" asp-action="AddDrawing">Add Drawing</a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -35,6 +38,22 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            <div id="msg-alert">
+                @{
+                    if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-primary" role="alert">
+                            @TempData["Success"]
+                        </div>
+                    }
+                    else if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @TempData["Error"]
+                        </div>
+                    }
+                }
+            </div>
             @RenderBody()
         </main>
     </div>
@@ -50,3 +69,12 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
+<script>
+    const alert = document.getElementById("msg-alert");
+    if(alert.children.length > 0){
+        setTimeout(()=>{
+            alert.removeChild(alert.firstChild);
+        }, 2000);
+    }
+    
+</script>

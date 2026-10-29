@@ -1,6 +1,9 @@
 ﻿using DrawingRegister.Data.Context;
+using DrawingRegister.Data.Entities;
 using DrawingRegister.Web.Models.Drawing;
+using DrawingRegister.Web.Models.Drawing.Add;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace DrawingRegister.Web.Controllers
@@ -79,6 +82,115 @@ namespace DrawingRegister.Web.Controllers
                 .ToListAsync();
 
             return View(drawingsV2);
+        }
+
+      
+        private async Task<List<SelectListItem>> PopulateProjects()
+        {
+            var projectsList = await _context.Projects.Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = p.Name,
+            }).ToListAsync();
+
+            return projectsList;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddDrawing()
+        {          
+            return View(new AddDrawingViewModel
+            {
+                Projects = await PopulateProjects()
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddDrawing(AddDrawingViewModel addDrawingViewModel)
+        {
+            /*
+                ModelState - is a dictionary of errors, keyed by field name, that lives for the duration of one request. Model binding fills it automatically: if the user types “abc” into a number field, binding adds an error under DocumentNumber. ModelState.IsValid just means “that dictionary has no errors.”             
+             */
+            if (ModelState.IsValid)
+            {
+                // use AnyAsync not FindAsync and Find get the entity with this primary key
+                /*
+                    For anything else you write a condition, and these are the ones you’ll use constantly:
+
+                    AnyAsync(d => ...): does at least one match? Returns bool. Use for yes/no checks like your duplicate test.
+                    FirstOrDefaultAsync(d => ...): give me the first match, or null. Use when you need the entity itself.
+                    SingleOrDefaultAsync(d => ...): like FirstOrDefault, but throws if more than one matches. Good when you expect exactly one, like a unique DocumentNumber.
+                    CountAsync(d => ...): how many match? You’ll need this for the paging total.
+                    Where(...): not a lookup but a filter that stays in the chain. This is what your search and filters will use.
+                 
+                 */
+                var drawingNumber = await _context.Drawings.AnyAsync(drw=> drw.DocumentNumber == addDrawingViewModel.DocumentNumber);
+
+                if(drawingNumber)
+                {
+                    /*
+                        - nameof(x) gives the name of something, as a string, at compile time.
+                                nameof(vm.DocumentNumber)   // "DocumentNumber"
+                                nameof(Index)               // "Index"
+
+                        It never reads the value. Use it whenever you need a name as text.
+
+                        - typeof(X) gives a System.Type object describing a type, not a value or a name.
+                                typeof(Status)              // a Type object for the Status enum
+
+                        You used it with Enum.GetValues(typeof(Status)). Use it when an API wants the type itself.
+
+                        Quick rule:
+
+                        - Need the name as text → nameof
+                        - Need the value → just read the property
+                        - Need the type itself → typeof
+
+                       */
+
+                    /*
+                        AddModelError(key, message) lets you add your own entry to that dictionary:
+
+                        ModelState.AddModelError(nameof(addDrawingViewModel.DocumentNumber), "Drawing number already exists.");
+
+                        * The first argument is the key: which field the error belongs to. nameof(...) gives you the string "DocumentNumber" without typos. It must match the property name (and so the input’s name) for the error to attach to that field.
+                        * The second is the message the user sees.
+                        * Passing an empty string "" as the key makes it a model-level error, not tied to any field.
+                     
+                      */
+                    ModelState.AddModelError(nameof(addDrawingViewModel.DocumentNumber), "Drawing number already exists.");
+                    addDrawingViewModel.Projects = await PopulateProjects();
+                    return View(addDrawingViewModel);
+                }
+
+                var newDarwing = new Drawing
+                {
+                    DocumentNumber = addDrawingViewModel.DocumentNumber.Value,
+                    Name = addDrawingViewModel.Name,
+                    Path = addDrawingViewModel.Path,
+                    DrawingType = addDrawingViewModel.DrawingType.Value,
+                    DrawingStatus = addDrawingViewModel.DrawingStatus.Value,
+                    ProjectId = addDrawingViewModel.ProjectId.Value
+                };
+
+                _context.Drawings.Add(newDarwing);
+                await _context.SaveChangesAsync();
+                /*
+                      TempData: a short-lived store that survives one redirect. You set it in a POST, redirect, and the next request reads it once, then it’s gone. It’s for page-level messages after an action: “Drawing saved”, “Drawing deleted”.
+
+                    AddModelError: adds an error to ModelState, which exists for the current request only. It’s for validation problems with the data the user just submitted, and you use it when you return View(...) (no redirect) so the form re-renders with the user’s input still in it, and the error sits next to the field.
+                 
+                    When to use which:
+
+                    * User submitted something invalid, you re-show the form → ModelState / AddModelError.
+                    * Action succeeded (or failed for a non-input reason), you redirect → TempData.
+                  */
+                TempData["Success"] = "Drawing Saved Sucesufuly.";  
+
+                return RedirectToAction(nameof(Index));
+            }
+            addDrawingViewModel.Projects = await PopulateProjects();
+            return View(addDrawingViewModel);
         }
     }
 }
