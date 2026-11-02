@@ -1,0 +1,67 @@
+﻿@model DrawingRegister.Web.Models.Drawing.Edit.EditDrawingViewModel
+@using DrawingRegister.Data.Entities
+
+
+<form method="post" asp-controller="Drawing" asp-action="EditDrawing">
+    @* 
+        Hidden Id: Id without the hidden input works because of route values. The form posts to /Drawing/EditDrawing/5, and model binding fills Id from the URL too, not just from form fields. That’s why it works. 
+        
+        Two things to know:
+        * It works only because the URL still contains the id. If post to a URL without it, Id is 0.
+        * The hidden input is the explicit version: the Id travels in the form body, so the POST doesn’t depend on routing. Many people keep it for clarity. Your choice, but know why it works. 
+
+        !!! One caution: since Id comes from the client either way, a user can tamper with it. Fine for this project (no auth), but worth remembering. !!!
+     *@
+    <input type="hidden" asp-for="Id" />
+    <div class="mb-3">
+        <select asp-for="ProjectId"
+                class="form-select"
+                aria-label="Projects"
+                id="projects-dropdown"
+                asp-items="Model.Projects">
+            <option value="" selected>Select Project</option>
+        </select>
+        <span asp-validation-for="ProjectId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" class="form-control" id="name" asp-for="Name">
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="path" class="form-label">Path</label>
+        <input type="text" class="form-control" id="path" asp-for="Path">
+        <span asp-validation-for="Path" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="docNumber" class="form-label">Document Number</label>
+        @* asp-validation-for is the Razor tag helper that displays errors. *@
+        <input type="number" class="form-control" id="docNumber" asp-for="DocumentNumber">
+        <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+
+    </div>
+    <div class="mb-3">
+        <select asp-for="DrawingType"
+                class="form-select"
+                aria-label="Drawing Types"
+                asp-items="Html.GetEnumSelectList<DrawingRegister.Data.Entities.Type>()">
+            @* <option value="" selected> with an int: an empty value on a non-nullable int/enum fails model binding with a “value is invalid” error, which is actually useful *@
+            <option value="" selected>Select Drawing Type</option>
+        </select>
+        <span asp-validation-for="DrawingType" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <select asp-for="DrawingStatus"
+                class="form-select"
+                aria-label="Drawing Status"
+                asp-items="Html.GetEnumSelectList<Status>()">
+            <option value="" selected>Select Drawing Status</option>
+        </select>
+        <span asp-validation-for="DrawingStatus" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Drawing</button>
+</form>
+
+
+
+

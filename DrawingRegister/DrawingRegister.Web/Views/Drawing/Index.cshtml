@@ -2,28 +2,32 @@
 @{
 }
 
-<table>
-     <thead>
+<table class="table table-hover">
+    <thead>
         <tr>
-            <th>Id</th>
-            <th>Name</th>
-            <th>Document No.</th>
-            <th>Status</th>
-            <th>Project Name</th>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Document No.</th>
+            <th scope="col">Status</th>
+            <th scope="col">Project Name</th>
+            <th scope="col"></th>
         </tr>
-     </thead>
-      <tbody>
-            @foreach(var drw in Model)
-            {
-                <tr>
-                    <td>@drw.Id</td>
-                    <td>@drw.Name</td>
-                    <td>@drw.DocumentNumber</td>
-                    <td>@drw.DrawingStatus</td>
-                    <td>@drw.ProjectName</td>
-                </tr>                
-            }
+    </thead>
+    <tbody>
+        @foreach (var drw in Model)
+        {
+            <tr>
+                <td>@drw.Id</td>
+                <td>@drw.Name</td>
+                <td>@drw.DocumentNumber</td>
+                <td>@drw.DrawingStatus</td>
+                <td>@drw.ProjectName</td>
+                <td>
+                    <a asp-action="EditDrawing" asp-controller="Drawing" asp-route-id="@drw.Id" class="btn btn-primary">Edit</a>
+                </td>
+            </tr>
+        }
 
-      </tbody>
+    </tbody>
 </table>
 

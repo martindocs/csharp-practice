@@ -2,6 +2,7 @@
 using DrawingRegister.Data.Entities;
 using DrawingRegister.Web.Models.Drawing;
 using DrawingRegister.Web.Models.Drawing.Add;
+using DrawingRegister.Web.Models.Drawing.Edit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -185,12 +186,82 @@ namespace DrawingRegister.Web.Controllers
                     * User submitted something invalid, you re-show the form → ModelState / AddModelError.
                     * Action succeeded (or failed for a non-input reason), you redirect → TempData.
                   */
-                TempData["Success"] = "Drawing Saved Sucesufuly.";  
+                TempData["Success"] = "Drawing Saved Successfully.";  
 
                 return RedirectToAction(nameof(Index));
             }
             addDrawingViewModel.Projects = await PopulateProjects();
             return View(addDrawingViewModel);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditDrawing(int id)
+        {
+            var drawing = await _context.Drawings.FirstOrDefaultAsync(drw => drw.Id == id);
+
+            if(drawing == null) return NotFound();            
+                
+            return View(new EditDrawingViewModel
+            {
+                DocumentNumber = drawing.DocumentNumber,
+                Name = drawing.Name,
+                Path = drawing.Path,
+                DrawingType = drawing.DrawingType,
+                DrawingStatus = drawing.DrawingStatus,
+                ProjectId = drawing.ProjectId,
+                Projects = await PopulateProjects()
+            });                
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditDrawing(EditDrawingViewModel editDrawingViewModel)
+        {
+
+            if(ModelState.IsValid)
+            {
+                var drawing = await _context.Drawings.FirstOrDefaultAsync(drw => drw.Id == editDrawingViewModel.Id);
+
+                if (drawing == null) return NotFound();
+                
+                // drawing do not point itself AND does a different drawing already own entered number?
+                var checkDrwNumberDuplicated = await _context.Drawings.AnyAsync(drw => drw.Id != editDrawingViewModel.Id && drw.DocumentNumber == editDrawingViewModel.DocumentNumber);
+
+                if (checkDrwNumberDuplicated)
+                {
+                    ModelState.AddModelError(nameof(editDrawingViewModel.DocumentNumber), "Drawing number already exists.");
+
+                    editDrawingViewModel.Projects = await PopulateProjects();
+                    return View(editDrawingViewModel);
+                }
+
+                drawing.DocumentNumber = editDrawingViewModel.DocumentNumber.Value;
+                drawing.Name = editDrawingViewModel.Name;
+                drawing.Path = editDrawingViewModel.Path;
+                drawing.DrawingType = editDrawingViewModel.DrawingType.Value;
+                drawing.DrawingStatus = editDrawingViewModel.DrawingStatus.Value;
+                drawing.ProjectId = editDrawingViewModel.ProjectId.Value;
+
+                /*
+                        use of _context.Update(object);
+
+                        Update is for disconnected entities, objects EF isn’t tracking. Update(entity) says “start tracking this, and assume every column changed.” Typical cases:
+
+                        * An entity arrives from outside the context (an API body, a deserialized object) with no prior load.
+                        * You want to skip the SELECT and just write: build new Drawing { Id = ..., ... }, call Update, save.        
+
+                        The cost is every column goes into the UPDATE, and anything you didn’t set (like ReleaseDate) gets overwritten with null.
+                        For a small project the performance is irrelevant; the real risk is the silent overwrite. For web forms, “load, change, save” is the safer default.
+                    */
+
+                await _context.SaveChangesAsync();
+                TempData["Success"] = "Drawing Saved Successfully.";
+                return RedirectToAction(nameof(Index));  
+            }
+
+            editDrawingViewModel.Projects = await PopulateProjects();
+            return View(editDrawingViewModel);
+        }
+
+
     }
 }

@@ -1,3 +1,15 @@
+## 2026-11-02
+- Delete drawing operation
+
+## 2026-10-30
+- Edit drawing operation
+- note: wrap SaveChanges in try/catch for DbUpdateException, Create and Edit. For edge case when two users saving the same number within milliseconds
+```
+try { await SaveChangesAsync(); redirect }
+catch (DbUpdateException) { AddModelError on DocumentNumber, refill Projects, return View }
+	
+```
+
 ## 2026-10-29
 - change JS fetch in the view model for server-side static. Use fetch in view model only for dependent dropdowns
 - add attribute values in view model 
@@ -6,7 +18,7 @@
 - use AnyAsync for other lookups instead of FindAsync as the second will get always by primary key
 
 ## 2026-10-26
-- CRUD operation
+- Add drawing operation
 
 ## 2026-10-22
 - write DrawingController to show the list
