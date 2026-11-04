@@ -1,3 +1,6 @@
+## 2026-11-03
+- Refactoring drawing index page
+
 ## 2026-11-02
 - Delete drawing operation
 

@@ -106,6 +106,7 @@ namespace DrawingRegister.Web.Controllers
             });
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> AddDrawing(AddDrawingViewModel addDrawingViewModel)
         {
@@ -213,6 +214,7 @@ namespace DrawingRegister.Web.Controllers
             });                
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> EditDrawing(EditDrawingViewModel editDrawingViewModel)
         {
@@ -247,7 +249,7 @@ namespace DrawingRegister.Web.Controllers
                         Update is for disconnected entities, objects EF isn’t tracking. Update(entity) says “start tracking this, and assume every column changed.” Typical cases:
 
                         * An entity arrives from outside the context (an API body, a deserialized object) with no prior load.
-                        * You want to skip the SELECT and just write: build new Drawing { Id = ..., ... }, call Update, save.        
+                        * You want to skip the SELECT and just write: build new Drawing { Id = ..., ... }, call Update, save.      
 
                         The cost is every column goes into the UPDATE, and anything you didn’t set (like ReleaseDate) gets overwritten with null.
                         For a small project the performance is irrelevant; the real risk is the silent overwrite. For web forms, “load, change, save” is the safer default.
@@ -262,6 +264,19 @@ namespace DrawingRegister.Web.Controllers
             return View(editDrawingViewModel);
         }
 
+        [ValidateAntiForgeryToken] // protects against cross-site request forger
+        [HttpPost]
+        public async Task<IActionResult> DeleteDrawing(int id)
+        {
+            var drawing = await _context.Drawings.FirstOrDefaultAsync(drw => drw.Id == id);
 
+            if (drawing == null) return NotFound();
+
+            _context.Drawings.Remove(drawing);
+            await _context.SaveChangesAsync();            
+
+             TempData["Success"] = "Drawing Deleted Successfully.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

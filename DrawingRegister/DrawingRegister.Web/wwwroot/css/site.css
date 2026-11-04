@@ -20,3 +20,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* MODAL */
+.modal-msg{
+    font-weight: 700;
+}
+
+.narrow-column {
+    width: 1%;
+}

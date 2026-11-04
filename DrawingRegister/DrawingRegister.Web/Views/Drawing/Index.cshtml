@@ -10,7 +10,9 @@
             <th scope="col">Document No.</th>
             <th scope="col">Status</th>
             <th scope="col">Project Name</th>
-            <th scope="col"></th>
+            <th scope="col" class="narrow-column"></th>
+            <th scope="col" class="narrow-column"></th>
+            <th scope="col" class="narrow-column"></th>
         </tr>
     </thead>
     <tbody>
@@ -23,11 +25,80 @@
                 <td>@drw.DrawingStatus</td>
                 <td>@drw.ProjectName</td>
                 <td>
-                    <a asp-action="EditDrawing" asp-controller="Drawing" asp-route-id="@drw.Id" class="btn btn-primary">Edit</a>
+                    <a 
+                        asp-action="AddDrawing" 
+                        asp-controller="Drawing"
+                        class="btn btn-info"
+                    >Add</a>
+                </td>
+                <td>
+                    <a 
+                        asp-action="EditDrawing" 
+                        asp-controller="Drawing" 
+                        asp-route-id="@drw.Id"
+                       class="btn btn-primary">Edit</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger"
+                       data-bs-toggle="modal" 
+                        data-bs-target="#deleteDrawingleModal"
+                        data-name="@drw.Name"
+                        data-id="@drw.Id"
+                    >Delete</a>
                 </td>
             </tr>
         }
 
     </tbody>
 </table>
+<!-- Modal -->
+<div class="modal fade" id="deleteDrawingleModal" tabindex="-1" aria-labelledby="deleteDrawingleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="deleteDrawingleModalLabel">Confirm action</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want delete <span class="modal-msg" id="modal-msg"></span>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                 <form id="deleteDrawing" method="post">
+                    @*
+                        antiforgery token — without it ASP.NET Core will reject the POST 
 
+                        How the token stops it: when the server renders your form, it embeds a random token (the hidden field from @Html.AntiForgeryToken()) and also sets a matching cookie. On POST, [ValidateAntiForgeryToken] checks that both are present and match. A malicious site can make your browser send the cookie, but it can’t read the token from your page, so its forged request fails with a 400.
+
+                        The token only ensures the request came from your own page.
+                        *@
+                    @Html.AntiForgeryToken()
+                    <button 
+                        type="submit" 
+                        class="btn btn-primary" 
+                    >Delete drawing</button>
+                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const modal = document.getElementById("deleteDrawingleModal");
+    
+    // show.bs.modal boostarp method will return the clicked element available as the "relatedTarget" prop 
+    modal.addEventListener("show.bs.modal", function(e){
+        
+        // Need to set data prop on clicked "Delete" button
+        const id = e.relatedTarget.dataset.id; // 
+        const name = e.relatedTarget.dataset.name;
+
+        const modalMessage = document.getElementById("modal-msg");
+        const modalDeleteBtn = document.getElementById("deleteDrawing");
+
+        modalMessage.textContent = name;
+        // modal form has no asp-action, so it need to be added
+        modalDeleteBtn.action = `/Drawing/DeleteDrawing/${id}`;
+    });
+
+</script>
