@@ -1,6 +1,33 @@
-﻿@model List<DrawingRegister.Web.Models.Drawing.IndexDrawingViewModel>
+﻿@model DrawingRegister.Web.Models.Drawing.Index.IndexDrawingViewModel
+@using DrawingRegister.Data.Entities
 @{
 }
+
+<form method="get" asp-action="Index" asp-controller="Drawing" id="drw-form">
+    <div class="row">
+        <div class="col-9 d-flex">
+            <input type="text" class="form-control" placeholder="" aria-label="Recipient’s username" aria-describedby="button-addon2" name="query" value="@Model.Query">
+            <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Filter</button>
+        </div>
+        <div class="col-3 d-flex">
+            <select 
+                asp-for="Status"
+                name="status" 
+                asp-items="Html.GetEnumSelectList<Status>()" 
+                    id="drw-status"
+            >
+                <option value="">All</option>
+            </select>
+            <select                 
+                asp-for="ProjectId" 
+                asp-items="@Model.Projects" 
+                id="drw-project">
+                <option value="">All</option>
+            </select>     
+        </div>
+
+     </div>
+</form>
 
 <table class="table table-hover">
     <thead>
@@ -16,14 +43,14 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var drw in Model)
+        @foreach (var drw in Model.Drawings)
         {
             <tr>
                 <td>@drw.Id</td>
                 <td>@drw.Name</td>
                 <td>@drw.DocumentNumber</td>
-                <td>@drw.DrawingStatus</td>
-                <td>@drw.ProjectName</td>
+                <td>@drw.DrawingStatus</td>               
+                <td>@drw.ProjectName</td>               
                 <td>
                     <a 
                         asp-action="AddDrawing" 
@@ -99,6 +126,18 @@
         modalMessage.textContent = name;
         // modal form has no asp-action, so it need to be added
         modalDeleteBtn.action = `/Drawing/DeleteDrawing/${id}`;
+    });
+
+    const form = document.querySelector("form");    
+    const drwStatus = document.getElementById("drw-status");
+    const drwProject = document.getElementById("drw-project");
+
+    drwStatus.addEventListener("change", (e)=>{
+        form.requestSubmit();
+    });
+
+    drwProject.addEventListener("change", (e)=>{
+        form.requestSubmit();
     });
 
 </script>

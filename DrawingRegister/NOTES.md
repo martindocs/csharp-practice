@@ -1,3 +1,7 @@
+## 2026-11-04
+- Search functionality
+- note: document number may need to be a string, as curently search is only either query(string) or drawing number(int)
+
 ## 2026-11-03
 - Refactoring drawing index page
 

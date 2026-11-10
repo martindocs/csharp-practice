@@ -1,8 +1,8 @@
 ﻿using DrawingRegister.Data.Context;
 using DrawingRegister.Data.Entities;
-using DrawingRegister.Web.Models.Drawing;
 using DrawingRegister.Web.Models.Drawing.Add;
 using DrawingRegister.Web.Models.Drawing.Edit;
+using DrawingRegister.Web.Models.Drawing.Index;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +19,15 @@ namespace DrawingRegister.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        // the ? goes on the action parameters in Index(...), because that’s where the filter values arrive from the URL
+        /*
+            The nullable idea only applies where “empty” is a valid state:
+            - Form ViewModels (Create/Edit): the user hasn’t filled it in yet → nullable.
+            - Filter parameters: the user hasn’t chosen a filter → nullable.
+            - Table row ViewModel: data already in the database → match the entity.
+         
+         */
+        public async Task<IActionResult> Index(string? query, Status? status, int? projectId)
         {
             // *** VERSION 1 - WITH INCLUDE ***
             /* 
@@ -37,10 +45,10 @@ namespace DrawingRegister.Web.Controllers
                 .Take(10)
                 .Include(d => d.Project)
                 .ToListAsync();
-
-            var drawingsView1 = new List<IndexDrawingViewModel>();
+            
+            var drawingsView1 = new List<RowDrawingViewModel>();
             foreach (var drawing in drawingsV1) {
-                drawingsView1.Add(new IndexDrawingViewModel
+                drawingsView1.Add(new RowDrawingViewModel
                 {
                     Id = drawing.Id,
                     Name = drawing.Name,
@@ -67,25 +75,87 @@ namespace DrawingRegister.Web.Controllers
              
              */
 
-            var drawingsV2 = await _context.Drawings
-                .OrderBy(drw => drw.Id)
-                .Take(10)
-                .Select(drw => new IndexDrawingViewModel
-                {
-                    Id = drw.Id,
-                    Name = drw.Name,
-                    DocumentNumber = drw.DocumentNumber,
-                    DrawingType = drw.DrawingType,
-                    DrawingStatus = drw.DrawingStatus,
-                    ReleaseDate = drw.ReleaseDate,
-                    ProjectName = drw.Project.Name
-                })
-                .ToListAsync();
+            /*
+                Query Syntax:
+                var movies = from m in _context.Movie
+                         where m.Rating > 7
+                         select m;
 
-            return View(drawingsV2);
+                Method Syntax:
+                var movies = _context.Movie
+                      .Where(m => m.Rating > 7);             
+                
+                Generally, the order is:
+                - Where() – Filter records.
+                - OrderBy() / OrderByDescending() – Sort records.
+                - Skip() – Skip records (pagination).
+                - Take() – Limit the number of records.
+              */
+
+            IQueryable<Drawing> drawingsV2 = _context.Drawings;
+
+            if (!String.IsNullOrEmpty(query))
+            {
+                var isNumber = int.TryParse(query, out int drwNumber);
+
+                if(isNumber)
+                {
+                    drawingsV2 = drawingsV2.Where(drw => drw.DocumentNumber == drwNumber);
+                }else
+                {                    
+                    drawingsV2 = drawingsV2.Where(drw => drw.Name.Contains(query));
+                }
+
+            }                    
+
+            if (status.HasValue)
+            {
+                drawingsV2 = drawingsV2.Where(drw => drw.DrawingStatus == status);
+            }   
+
+            if (projectId.HasValue)
+            {
+                drawingsV2 = drawingsV2.Where(drw => drw.ProjectId == projectId);
+            }
+
+            drawingsV2 = drawingsV2
+                  // Where, OrderBy, Skip and Take all preserve the element type IQueryable
+                  .OrderBy(drw => drw.Id)
+                  .Take(10);
+         
+
+            var rowDrawing = drawingsV2// Select can change the type so it needs to be separated when building the query
+              .Select(drw => new RowDrawingViewModel
+              {
+                  Id = drw.Id,
+                  Name = drw.Name,
+                  DocumentNumber = drw.DocumentNumber,
+                  DrawingType = drw.DrawingType,
+                  DrawingStatus = drw.DrawingStatus,
+                  ReleaseDate = drw.ReleaseDate,
+                  ProjectName = drw.Project.Name
+              }).ToListAsync();
+            
+            return View(new IndexDrawingViewModel
+            {
+                Query = query,
+                Status = status,
+                ProjectId = projectId,
+                Drawings = await rowDrawing,
+                Projects = await PopulateProjects(),
+            });
+            /*
+                What to check:
+
+                Row count: the table should shrink to the matches. If you search for something you know exists (a document number from the Index page), you should see it.
+                Empty search: /Drawing/Index with no query string should still show everything, which proves “no filter” is a valid state.
+                No match: search for gibberish and confirm you get an empty table, not an error.
+                Case: try upper and lower case. Whether it matches depends on your database collation, so just observe it.            
+             
+             */
         }
 
-      
+
         private async Task<List<SelectListItem>> PopulateProjects()
         {
             var projectsList = await _context.Projects.Select(p => new SelectListItem
@@ -278,5 +348,7 @@ namespace DrawingRegister.Web.Controllers
              TempData["Success"] = "Drawing Deleted Successfully.";
             return RedirectToAction(nameof(Index));
         }
+
+       
     }
 }

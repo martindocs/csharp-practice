@@ -1,9 +1,8 @@
 ﻿using DrawingRegister.Data.Entities;
-using System.ComponentModel.DataAnnotations;
 
-namespace DrawingRegister.Web.Models.Drawing
+namespace DrawingRegister.Web.Models.Drawing.Index
 {
-    public class IndexDrawingViewModel
+    public class RowDrawingViewModel
     {
         public int Id { get; set; }
         public int DocumentNumber { get; set; }
@@ -17,6 +16,5 @@ namespace DrawingRegister.Web.Models.Drawing
         public DateTime? ReleaseDate { get; set; }
         //public Project Project { get; set; } // No need to load whole Project just need name
         public string ProjectName { get; set; }
-
     }
 }
