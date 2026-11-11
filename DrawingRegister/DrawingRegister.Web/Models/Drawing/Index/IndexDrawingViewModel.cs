@@ -13,6 +13,8 @@ namespace DrawingRegister.Web.Models.Drawing.Index
         public string? Query { get; set; }
         public Status? Status { get; set; }
         public int? ProjectId { get; set; }
+        public string? SortBy { get; set; }
+        public string? SortDir { get; set; }
 
         public List<RowDrawingViewModel> Drawings { get; set; } = new();
 

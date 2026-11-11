@@ -1,6 +1,17 @@
+## 2026-11-12
+- Pagination functionality
+
+## 2026-11-10
+- Sorting functionality
+
 ## 2026-11-04
 - Search functionality
-- note: document number may need to be a string, as curently search is only either query(string) or drawing number(int)
+- note: document number may need to be a string, as currently search is only either query(string) or drawing number(int)
+
+```
+drawingsV2 = drawingsV2.Where(drw =>
+        drw.Name.Contains(query) || drw.DocumentNumber.Contains(query));
+```
 
 ## 2026-11-03
 - Refactoring drawing index page

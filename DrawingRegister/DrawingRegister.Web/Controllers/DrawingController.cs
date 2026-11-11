@@ -27,7 +27,7 @@ namespace DrawingRegister.Web.Controllers
             - Table row ViewModel: data already in the database → match the entity.
          
          */
-        public async Task<IActionResult> Index(string? query, Status? status, int? projectId)
+        public async Task<IActionResult> Index(string? query, Status? status, int? projectId, string? sortBy, string? sortDir)
         {
             // *** VERSION 1 - WITH INCLUDE ***
             /* 
@@ -91,8 +91,11 @@ namespace DrawingRegister.Web.Controllers
                 - Skip() – Skip records (pagination).
                 - Take() – Limit the number of records.
               */
+                                 
 
+            // FILTERING
             IQueryable<Drawing> drawingsV2 = _context.Drawings;
+                       
 
             if (!String.IsNullOrEmpty(query))
             {
@@ -118,9 +121,34 @@ namespace DrawingRegister.Web.Controllers
                 drawingsV2 = drawingsV2.Where(drw => drw.ProjectId == projectId);
             }
 
+            // SORTING
+            //ViewBag.NameSortParam = String.IsNullOrEmpty(sortBy) ? "name" : "";
+            //ViewBag.DrawingNumberSortParam = String.IsNullOrEmpty(sortBy) ? "drawing" : "";
+            var desc = sortDir == "desc"; // by default is in asc order 
+
+            /*
+                we use tiebraker .ThenBy() - Because OrderBy on a column with duplicate values doesn’t say what order the tied rows come back in. The database is free to return them in any order, and that order can change between queries.                     
+             */
+            switch (sortBy)
+            {
+                case "name":
+                    drawingsV2 = desc
+                        ? drawingsV2.OrderByDescending(drw => drw.Name).ThenBy(drw=>drw.Id) 
+                        : drawingsV2.OrderBy(drw => drw.Name).ThenBy(drw => drw.Id); // ThenBy is ascending by default
+                    break;
+                case "drawing":
+                    drawingsV2 = desc 
+                        ? drawingsV2.OrderByDescending(drw => drw.DocumentNumber).ThenBy(drw => drw.Id)
+                        : drawingsV2.OrderBy(drw => drw.DocumentNumber).ThenBy(drw => drw.Id);
+                    break;
+                default:
+                    drawingsV2 = drawingsV2.OrderBy(drw => drw.Id); // asc order
+                    break;
+            }
+
             drawingsV2 = drawingsV2
                   // Where, OrderBy, Skip and Take all preserve the element type IQueryable
-                  .OrderBy(drw => drw.Id)
+                  //.OrderBy(drw => drw.Id)
                   .Take(10);
          
 
@@ -135,11 +163,15 @@ namespace DrawingRegister.Web.Controllers
                   ReleaseDate = drw.ReleaseDate,
                   ProjectName = drw.Project.Name
               }).ToListAsync();
-            
+                       
+
             return View(new IndexDrawingViewModel
             {
+                
                 Query = query,
                 Status = status,
+                SortBy = sortBy,
+                SortDir = sortDir,
                 ProjectId = projectId,
                 Drawings = await rowDrawing,
                 Projects = await PopulateProjects(),
