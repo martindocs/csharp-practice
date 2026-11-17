@@ -27,7 +27,7 @@ namespace DrawingRegister.Web.Controllers
             - Table row ViewModel: data already in the database → match the entity.
          
          */
-        public async Task<IActionResult> Index(string? query, Status? status, int? projectId, string? sortBy, string? sortDir)
+        public async Task<IActionResult> Index(string? query, Status? status, int? projectId, string? sortBy, string? sortDir, int page = 1, int pageSize = 10)
         {
             // *** VERSION 1 - WITH INCLUDE ***
             /* 
@@ -121,6 +121,16 @@ namespace DrawingRegister.Web.Controllers
                 drawingsV2 = drawingsV2.Where(drw => drw.ProjectId == projectId);
             }
 
+
+            // PAGINATION            
+            var totalCount = await drawingsV2.CountAsync(); // total count of records
+            pageSize = Math.Clamp(pageSize, 5, 50); // it keeps the page size between 5 and 50 rows, so a user can’t ask for 1000.
+            var totalPages = Math.Ceiling(totalCount / (decimal)pageSize); // it’s the total number of pages, rounded up. It’s only the upper limit
+            // it keeps the page inside the valid range, from 1 to the last page. 
+            // for edge case when query return 0 , and the totalPages will be zero, the min page Clamp(page, 1, 1)
+            //            Clamp(page, 1, Math.Max(1, 0) = 1) ==> page = 1
+            page = Math.Clamp(page, 1, Math.Max(1, (int)totalPages));
+            
             // SORTING
             //ViewBag.NameSortParam = String.IsNullOrEmpty(sortBy) ? "name" : "";
             //ViewBag.DrawingNumberSortParam = String.IsNullOrEmpty(sortBy) ? "drawing" : "";
@@ -149,8 +159,18 @@ namespace DrawingRegister.Web.Controllers
             drawingsV2 = drawingsV2
                   // Where, OrderBy, Skip and Take all preserve the element type IQueryable
                   //.OrderBy(drw => drw.Id)
-                  .Take(10);
-         
+                  /*
+                        Skip                Take    Shown Items on the Page
+                        1 - 1 * 5 = 0       5               0 - 5   
+                        2 - 1 * 5 = 5       5               5 - 10
+                        3 - 1 * 5 = 10      5               10 - 15
+                        4 - 1 * 5 = 15      5               15 - 20
+                        5 - 1 * 5 = 20      5               20 - 25
+                      Take
+                     */
+                  .Skip((page - 1) * pageSize)
+                  .Take(pageSize);
+
 
             var rowDrawing = drawingsV2// Select can change the type so it needs to be separated when building the query
               .Select(drw => new RowDrawingViewModel
@@ -172,6 +192,9 @@ namespace DrawingRegister.Web.Controllers
                 Status = status,
                 SortBy = sortBy,
                 SortDir = sortDir,
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalCount,
                 ProjectId = projectId,
                 Drawings = await rowDrawing,
                 Projects = await PopulateProjects(),

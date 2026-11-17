@@ -2,6 +2,7 @@
 @using DrawingRegister.Data.Entities
 @functions { @* @function is used for declaration, and @{} is intended for executable C# statements *@
 
+    // SortLink doesn’t send page?, so re-sorting returns to page 1
     private Dictionary<string, string> SortLink(string value)
     {
         var isCurrent = Model.SortBy == value; // false on the first page load
@@ -17,11 +18,26 @@
         };
     }
 
-
+    private Dictionary<string, string> PaginationLink(int page)
+    {    
+        return new Dictionary<string, string> {
+            { "page", page.ToString()},  
+            { "pageSize", Model.PageSize.ToString()}, // Without it, a user who picks a different page size loses it on the first page click.
+            { "sortBy", Model.SortBy },
+            { "sortDir", Model.SortDir },
+            { "query", Model.Query },
+            { "status", Model.Status?.ToString() },
+            { "projectId", Model.ProjectId.ToString() },
+        };
+    }
 }
 
 <form method="get" asp-action="Index" asp-controller="Drawing" id="drw-form">
-    <input type="hidden" asp-for="SortBy" />
+    @* The hidden inputs matter when the form is submitted. 
+
+        A GET form builds a brand-new URL from only its own fields, so anything not in the form is dropped. Without the hidden fields, typing a search or changing a dropdown would send query, status and projectId, but no sortBy or sortDir, and the sort would reset. 
+    *@
+    <input type="hidden" asp-for="SortBy" /> 
     <input type="hidden" asp-for="SortDir" />
     <div class="row">
         <div class="col-9 d-flex">
@@ -103,6 +119,36 @@
 
     </tbody>
 </table>
+@* Show the pagination when TotalPages > 1 *@
+@if(Model.TotalPages > 1) 
+{
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="@(Model.Page == 1 ? "page-item disabled" : "page-item")">
+                <a class="page-link" asp-all-route-data="PaginationLink(Model.Page - 1)">Previous</a>
+            </li>
+            @for(var i = 1; i <= Model.TotalPages; i++)
+            {           
+               <li class="@(i == Model.Page ? "page-item active" : "page-item")">
+                <a class="page-link" asp-all-route-data="PaginationLink(i)">@i</a>
+               </li>           
+            }
+            <li class="@(Model.Page == Model.TotalPages ? "page-item disabled" : "page-item")">
+                <a class="page-link" asp-all-route-data="PaginationLink(Model.Page + 1)">Next</a>
+            </li>            
+        </ul>
+    </nav>
+}
+@* 
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", 
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+*@
+
+
+
 <!-- Modal -->
 <div class="modal fade" id="deleteDrawingleModal" tabindex="-1" aria-labelledby="deleteDrawingleModalLabel" aria-hidden="true">
     <div class="modal-dialog">

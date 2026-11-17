@@ -1,5 +1,6 @@
 ## 2026-11-12
 - Pagination functionality
+- note: Pager window (show 5 links around current page), revisit if page count grows.
 
 ## 2026-11-10
 - Sorting functionality
