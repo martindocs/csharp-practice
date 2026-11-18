@@ -10,6 +10,7 @@ namespace DrawingRegister.Web.Models.Drawing.Add
         public int? DocumentNumber { get; set; } // for default int is 0, to remove def value it need to be nullable
 
         [Required(ErrorMessage = "Please enter Name.")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Name must be 53 to 100 characters length.")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Please enter Path.")]

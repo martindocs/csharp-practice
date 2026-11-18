@@ -29,3 +29,16 @@ body {
 .narrow-column {
     width: 1%;
 }
+
+/* LINKS */
+.new-drw{
+    margin: 5px 0;
+}
+
+.new-drw a, .delete-drw, .edit-drw {
+    text-decoration: none;
+}
+
+.delete-drw:hover{
+    cursor: pointer
+}

@@ -32,6 +32,14 @@
     }
 }
 
+<div class="new-drw">
+    <a 
+        asp-action="AddDrawing"
+        asp-controller="Drawing"
+       >Create New
+    </a>    
+ </div>
+
 <form method="get" asp-action="Index" asp-controller="Drawing" id="drw-form">
     @* The hidden inputs matter when the form is submitted. 
 
@@ -91,24 +99,18 @@
                 <td>@drw.Name</td>
                 <td>@drw.DocumentNumber</td>
                 <td>@drw.DrawingStatus</td>               
-                <td>@drw.ProjectName</td>               
+                <td>@drw.ProjectName</td>                              
                 <td>
-                    <a 
-                        asp-action="AddDrawing" 
-                        asp-controller="Drawing"
-                        class="btn btn-info"
-                    >Add</a>
-                </td>
-                <td>
-                    <a 
+                    <a class="edit-drw"
                         asp-action="EditDrawing" 
                         asp-controller="Drawing" 
                         asp-route-id="@drw.Id"
-                       class="btn btn-primary">Edit</a>
+                       >Edit</a>
                 </td>
+                <td style="color: #a0a5aa">|</td>
                 <td>
-                    <a class="btn btn-danger"
-                       data-bs-toggle="modal" 
+                    <a  class="delete-drw"
+                        data-bs-toggle="modal" 
                         data-bs-target="#deleteDrawingleModal"
                         data-name="@drw.Name"
                         data-id="@drw.Id"

@@ -1,6 +1,8 @@
 ﻿@model DrawingRegister.Web.Models.Drawing.Edit.EditDrawingViewModel
 @using DrawingRegister.Data.Entities
-
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 
 <form method="post" asp-controller="Drawing" asp-action="EditDrawing">
     @* 

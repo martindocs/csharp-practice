@@ -1,3 +1,7 @@
+## 2026-11-18
+- Validation
+- Add client-side validation scripts to Create and Edit
+
 ## 2026-11-12
 - Pagination functionality
 - note: Pager window (show 5 links around current page), revisit if page count grows.
