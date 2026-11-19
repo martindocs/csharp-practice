@@ -5,7 +5,7 @@ namespace DrawingRegister.Web.Models.Drawing.Index
     public class RowDrawingViewModel
     {
         public int Id { get; set; }
-        public int DocumentNumber { get; set; }
+        public string DocumentNumber { get; set; }
         public string Name { get; set; }
 
         /*

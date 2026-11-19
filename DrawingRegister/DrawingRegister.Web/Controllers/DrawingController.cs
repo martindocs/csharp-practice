@@ -99,15 +99,17 @@ namespace DrawingRegister.Web.Controllers
 
             if (!String.IsNullOrEmpty(query))
             {
-                var isNumber = int.TryParse(query, out int drwNumber);
+                //var isNumber = int.TryParse(query, out int drwNumber);
 
-                if(isNumber)
-                {
-                    drawingsV2 = drawingsV2.Where(drw => drw.DocumentNumber == drwNumber);
-                }else
-                {                    
-                    drawingsV2 = drawingsV2.Where(drw => drw.Name.Contains(query));
-                }
+                //if(isNumber)
+                //{
+                //    drawingsV2 = drawingsV2.Where(drw => drw.DocumentNumber == drwNumber);
+                //}else
+                //{                    
+                //    drawingsV2 = drawingsV2.Where(drw => drw.Name.Contains(query));
+                //}
+
+                drawingsV2 = drawingsV2.Where(drw => drw.Name.Contains(query) || drw.DocumentNumber.Contains(query));
 
             }                    
 
@@ -292,7 +294,8 @@ namespace DrawingRegister.Web.Controllers
 
                 var newDarwing = new Drawing
                 {
-                    DocumentNumber = addDrawingViewModel.DocumentNumber.Value,
+                    //DocumentNumber = addDrawingViewModel.DocumentNumber.Value,
+                    DocumentNumber = addDrawingViewModel.DocumentNumber,
                     Name = addDrawingViewModel.Name,
                     Path = addDrawingViewModel.Path,
                     DrawingType = addDrawingViewModel.DrawingType.Value,
@@ -361,7 +364,8 @@ namespace DrawingRegister.Web.Controllers
                     return View(editDrawingViewModel);
                 }
 
-                drawing.DocumentNumber = editDrawingViewModel.DocumentNumber.Value;
+                //drawing.DocumentNumber = editDrawingViewModel.DocumentNumber.Value;
+                drawing.DocumentNumber = editDrawingViewModel.DocumentNumber;
                 drawing.Name = editDrawingViewModel.Name;
                 drawing.Path = editDrawingViewModel.Path;
                 drawing.DrawingType = editDrawingViewModel.DrawingType.Value;

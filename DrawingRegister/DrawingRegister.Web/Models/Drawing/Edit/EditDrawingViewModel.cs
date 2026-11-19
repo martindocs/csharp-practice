@@ -9,7 +9,7 @@ namespace DrawingRegister.Web.Models.Drawing.Edit
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Please enter Document Number.")]
-        public int? DocumentNumber { get; set; } 
+        public string? DocumentNumber { get; set; } 
 
         [Required(ErrorMessage = "Please enter Name.")]
         public string Name { get; set; }

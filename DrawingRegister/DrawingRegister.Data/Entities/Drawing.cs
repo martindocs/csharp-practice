@@ -5,7 +5,8 @@ namespace DrawingRegister.Data.Entities
     public class Drawing
     {
         public int Id { get; set; }
-        public int DocumentNumber { get; set; }
+        //public int DocumentNumber { get; set; } 
+        public string? DocumentNumber { get; set; }
         [Required]
         [StringLength(100, MinimumLength = 5, ErrorMessage = "Name must be 5 to 100 characters length.")]
         public string Name { get; set; }

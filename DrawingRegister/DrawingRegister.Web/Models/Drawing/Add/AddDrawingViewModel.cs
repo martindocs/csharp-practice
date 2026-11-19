@@ -7,10 +7,10 @@ namespace DrawingRegister.Web.Models.Drawing.Add
     public class AddDrawingViewModel
     {
         [Required(ErrorMessage = "Please enter Document Number.")]
-        public int? DocumentNumber { get; set; } // for default int is 0, to remove def value it need to be nullable
+        public string? DocumentNumber { get; set; } // for default int is 0, to remove def value it need to be nullable
 
         [Required(ErrorMessage = "Please enter Name.")]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "Name must be 53 to 100 characters length.")]
+        [StringLength(100, MinimumLength = 5, ErrorMessage = "Name must be 5 to 100 characters length.")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Please enter Path.")]

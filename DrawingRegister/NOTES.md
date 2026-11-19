@@ -1,3 +1,21 @@
+## 2026-11-19
+- Document NUmber change to string. Reason so document number could have text and numbers and also ability to use regex for filtering.
+- Change:
+* Switch entity Document Number to string
+* update AppContext to include HasMaxLength(50) for Document Number 
+* update SeedData to include prefix for document number
+* drop the database using SQL Server Object Explorer (delete db)
+* fix code errors
+* Delete the old files in the Data project’s Migrations folder. If not deleted the new migration builds on the old int history
+* Add a fresh migration by 
+ + go to Package Manager Console 
+ + Set Default project to DrawingRegister.Data
+ + Set the startup project to DrawingRegister.Web (Solution Explorer, right-click the project, Set as Startup Project)
+ + Run: Add-Migration InitialCreate
+ + Run: Update-Database
+ + Run: app which trigger re-seeding
+
+
 ## 2026-11-18
 - Validation
 - Add client-side validation scripts to Create and Edit

@@ -89,7 +89,7 @@ namespace DrawingRegister.Data.Seeding
 
                 drawings.Add(new Drawing
                 {
-                    DocumentNumber = i,
+                    DocumentNumber = "DRW-" + i.ToString().PadLeft(10, '0'),
                     Name = $"Drawing_{i}",
                     Path = "",
                     /*
