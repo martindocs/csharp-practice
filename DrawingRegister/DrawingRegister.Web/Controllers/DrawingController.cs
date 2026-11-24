@@ -5,6 +5,7 @@ using DrawingRegister.Web.Models.Drawing.Edit;
 using DrawingRegister.Web.Models.Drawing.Index;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace DrawingRegister.Web.Controllers
@@ -300,11 +301,26 @@ namespace DrawingRegister.Web.Controllers
                     Path = addDrawingViewModel.Path,
                     DrawingType = addDrawingViewModel.DrawingType.Value,
                     DrawingStatus = addDrawingViewModel.DrawingStatus.Value,
+                    ReleaseDate = addDrawingViewModel.ReleaseDate,
                     ProjectId = addDrawingViewModel.ProjectId.Value
                 };
 
                 _context.Drawings.Add(newDarwing);
-                await _context.SaveChangesAsync();
+
+
+                // Race condition. When two or more users save the document number 
+                try
+                {
+                    await _context.SaveChangesAsync();                    
+                }
+                catch (DbUpdateException ex)
+                {
+
+                    ModelState.AddModelError(nameof(addDrawingViewModel.DocumentNumber), "Drawing number already exists.");
+                    addDrawingViewModel.Projects = await PopulateProjects();
+                    return View(addDrawingViewModel);
+                }
+
                 /*
                       TempData: a short-lived store that survives one redirect. You set it in a POST, redirect, and the next request reads it once, then it’s gone. It’s for page-level messages after an action: “Drawing saved”, “Drawing deleted”.
 
@@ -323,6 +339,7 @@ namespace DrawingRegister.Web.Controllers
             return View(addDrawingViewModel);
         }
 
+
         [HttpGet]
         public async Task<IActionResult> EditDrawing(int id)
         {
@@ -338,7 +355,8 @@ namespace DrawingRegister.Web.Controllers
                 DrawingType = drawing.DrawingType,
                 DrawingStatus = drawing.DrawingStatus,
                 ProjectId = drawing.ProjectId,
-                Projects = await PopulateProjects()
+                Projects = await PopulateProjects(),
+                ReleaseDate = drawing.ReleaseDate              
             });                
         }
 
@@ -371,6 +389,7 @@ namespace DrawingRegister.Web.Controllers
                 drawing.DrawingType = editDrawingViewModel.DrawingType.Value;
                 drawing.DrawingStatus = editDrawingViewModel.DrawingStatus.Value;
                 drawing.ProjectId = editDrawingViewModel.ProjectId.Value;
+                drawing.ReleaseDate = editDrawingViewModel.ReleaseDate;
 
                 /*
                         use of _context.Update(object);
@@ -384,7 +403,19 @@ namespace DrawingRegister.Web.Controllers
                         For a small project the performance is irrelevant; the real risk is the silent overwrite. For web forms, “load, change, save” is the safer default.
                     */
 
-                await _context.SaveChangesAsync();
+                // Race condition. When two or more users save the document number 
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateException ex)
+                {
+                    ModelState.AddModelError(nameof(editDrawingViewModel.DocumentNumber), "Drawing number already exists.");
+
+                    editDrawingViewModel.Projects = await PopulateProjects();
+                    return View(editDrawingViewModel);
+                }
+
                 TempData["Success"] = "Drawing Saved Successfully.";
                 return RedirectToAction(nameof(Index));  
             }

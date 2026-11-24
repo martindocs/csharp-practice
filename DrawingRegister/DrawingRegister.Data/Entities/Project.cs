@@ -12,9 +12,9 @@ namespace DrawingRegister.Data.Entities
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "Name must be 5 to 100 characters length.")]
+        [StringLength(100)]
         public string Name { get; set; }
-        [StringLength(200, MinimumLength = 10, ErrorMessage = "Description must to be 10 to 200 characters length")]
+        [StringLength(200)]
         public string? Description { get; set; }
         public ICollection<Drawing> Drawings { get; set; } = new List<Drawing>(); // init collection so its not null at the start
     }

@@ -61,6 +61,11 @@
         </select>
         <span asp-validation-for="DrawingStatus" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label for="releaseDate" class="form-label">Release Date</label>
+        <input type="date" asp-for="ReleaseDate" />
+        <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+    </div>
     <button type="submit" class="btn btn-primary">Update Drawing</button>
 </form>
 

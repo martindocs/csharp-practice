@@ -1,4 +1,6 @@
 ﻿using DrawingRegister.Data.Entities;
+using Microsoft.VisualBasic;
+using System.ComponentModel.DataAnnotations;
 
 namespace DrawingRegister.Web.Models.Drawing.Index
 {

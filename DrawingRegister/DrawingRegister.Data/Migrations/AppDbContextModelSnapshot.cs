@@ -31,6 +31,7 @@ namespace DrawingRegister.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("DocumentNumber")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -63,8 +64,7 @@ namespace DrawingRegister.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DocumentNumber")
-                        .IsUnique()
-                        .HasFilter("[DocumentNumber] IS NOT NULL");
+                        .IsUnique();
 
                     b.HasIndex("ProjectId");
 

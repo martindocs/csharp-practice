@@ -5,19 +5,20 @@ namespace DrawingRegister.Data.Entities
     public class Drawing
     {
         public int Id { get; set; }
-        //public int DocumentNumber { get; set; } 
-        public string? DocumentNumber { get; set; }
         [Required]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "Name must be 5 to 100 characters length.")]
+        [StringLength(50)]
+        public string DocumentNumber { get; set; }
+        [Required]
+        [StringLength(100)]
         public string Name { get; set; }
         [Required]
-        [StringLength(250, MinimumLength = 5, ErrorMessage = "Path must be 5 to 250 characters length.")]
+        [StringLength(250)]
         public string Path { get; set; }
         [Required]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "Drawing Type must be 5 to 100 characters length.")]
+        [StringLength(100)]
         public Type DrawingType { get; set; }
         [Required]
-        [StringLength(100, MinimumLength = 5, ErrorMessage = "Drawing Status must be 5 to 100 characters length.")]
+        [StringLength(100)]
         public Status DrawingStatus { get; set; }
         public DateTime? ReleaseDate { get; set; }
         public int ProjectId { get; set; }
