@@ -54,9 +54,14 @@ namespace DrawingRegister.Data.Context
                     .HasForeignKey(p => p.ProjectId)
                     .OnDelete(DeleteBehavior.Restrict); // block the delete while children exist
 
-                    entity.
-                    HasIndex(p => p.DocumentNumber)
-                    .IsUnique(); 
+                    // Drawing table, column DrawingStatus, max length 24.
+                    entity.Property(p => p.DocumentNumber)
+                    .HasMaxLength(50);
+
+                    // Drawing table, make an index on DocumentNumber, no duplicates allowed.
+                    entity
+                    .HasIndex(p => p.DocumentNumber)
+                    .IsUnique();                  
                 });
 
             modelBuilder.Entity<Tag>(entity =>

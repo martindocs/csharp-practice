@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DrawingRegister.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20261019200556_AppInitWithRestrictOnProject")]
-    partial class AppInitWithRestrictOnProject
+    [Migration("20261119222428_MakeDocumentNumberRequired")]
+    partial class MakeDocumentNumberRequired
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,8 +33,10 @@ namespace DrawingRegister.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DocumentNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("DrawingStatus")
                         .IsRequired()
@@ -102,16 +104,21 @@ namespace DrawingRegister.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
                     b.Property<int>("DrawingId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Letter")
+                    b.Property<DateTime>("ReleaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RevisionLetter")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
-
-                    b.Property<DateTime>("ReleaseDate")
-                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

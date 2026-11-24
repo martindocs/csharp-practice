@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DrawingRegister.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AppInitWithRestrictOnProject : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -44,7 +44,7 @@ namespace DrawingRegister.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DocumentNumber = table.Column<int>(type: "int", nullable: false),
+                    DocumentNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Path = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     DrawingType = table.Column<string>(type: "nvarchar(24)", maxLength: 24, nullable: false),
@@ -93,7 +93,8 @@ namespace DrawingRegister.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Letter = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    RevisionLetter = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DrawingId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -112,7 +113,8 @@ namespace DrawingRegister.Data.Migrations
                 name: "IX_Drawings_DocumentNumber",
                 table: "Drawings",
                 column: "DocumentNumber",
-                unique: true);
+                unique: true,
+                filter: "[DocumentNumber] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Drawings_ProjectId",

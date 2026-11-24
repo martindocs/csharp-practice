@@ -85,7 +85,8 @@
                 @* @Html.ActionLink("Document No.", "Index", new { sortBy = ViewBag.DrawingNumberSortParam }) *@
             </th>
             <th scope="col">Status</th>
-            <th scope="col">Project Name</th>
+            <th scope="col">Release Date</th>
+            <th scope="col">Project Name</th>            
             <th scope="col" class="narrow-column"></th>
             <th scope="col" class="narrow-column"></th>
             <th scope="col" class="narrow-column"></th>
@@ -98,7 +99,8 @@
                 <td>@drw.Id</td>
                 <td>@drw.Name</td>
                 <td>@drw.DocumentNumber</td>
-                <td>@drw.DrawingStatus</td>               
+                <td>@drw.DrawingStatus</td>    
+                <td>@string.Format("{0:dd/MM/yyyy}", @drw.ReleaseDate)</td>
                 <td>@drw.ProjectName</td>                              
                 <td>
                     <a class="edit-drw"

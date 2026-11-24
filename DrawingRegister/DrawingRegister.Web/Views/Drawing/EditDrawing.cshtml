@@ -38,7 +38,7 @@
     <div class="mb-3">
         <label for="docNumber" class="form-label">Document Number</label>
         @* asp-validation-for is the Razor tag helper that displays errors. *@
-        <input type="number" class="form-control" id="docNumber" asp-for="DocumentNumber">
+        <input type="text" class="form-control" id="docNumber" asp-for="DocumentNumber">
         <span asp-validation-for="DocumentNumber" class="text-danger"></span>
 
     </div>
@@ -60,6 +60,11 @@
             <option value="" selected>Select Drawing Status</option>
         </select>
         <span asp-validation-for="DrawingStatus" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label for="releaseDate" class="form-label">Release Date</label>
+        <input type="date" asp-for="ReleaseDate" />
+        <span asp-validation-for="ReleaseDate" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary">Update Drawing</button>
 </form>
