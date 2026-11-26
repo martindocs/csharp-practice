@@ -1,3 +1,6 @@
+## 2026-11-25
+- Revision
+
 ## 2026-11-23
 - Regex
 - cross-field rule: IValidatableObject interface and customize Validate method on Add and Edit View Models

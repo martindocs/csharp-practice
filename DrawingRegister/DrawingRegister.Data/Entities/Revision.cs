@@ -18,9 +18,10 @@ namespace DrawingRegister.Data.Entities
            In a real database with real data that would lose the column’s contents, and you’d edit the migration to use RenameColumn instead. 
          */
         public string RevisionLetter { get; set; }
+        [Required]
         [StringLength(150)]
         public string Description { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateTime RevisionDate { get; set; }
         public int DrawingId { get; set; }
         public Drawing Drawing { get; set; }
     }

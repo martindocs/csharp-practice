@@ -109,7 +109,7 @@ namespace DrawingRegister.Data.Migrations
                     b.Property<int>("DrawingId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ReleaseDate")
+                    b.Property<DateTime>("RevisionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RevisionLetter")
@@ -119,7 +119,8 @@ namespace DrawingRegister.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DrawingId");
+                    b.HasIndex("DrawingId", "RevisionLetter")
+                        .IsUnique();
 
                     b.ToTable("Revisions");
                 });
